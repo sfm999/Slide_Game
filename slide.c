@@ -23,6 +23,31 @@
 #define CLOCKWISE 1
 #define ANTI_CLOCKWISE 2
 
+/*
+    NIGHT REALM
+
+    Seems that the night realms stones are initiated by negative numbers. I'm assuming that
+    the negative numbers work the same way positives do in that if it's a tnt barrel but in the night realm,
+    it still explodes in a radius around itself.
+
+    The night realm only shows after a shift and it won't show on the initial printing of the map.
+    The night realm is also unrotateable, so there may need to be some sort of state that dictates
+    whether night or day. This could theoretically be done from having a variable in the main
+    that represents the night realm being on or off, and this variable can be accessed by the
+    main functionality loop that grabs all the user inputs. This way we can provide some sort of context
+    such as if the night realm is activated, then any rotation commands are ignored until daytime mode,
+    and we just print the map. Seems fairly simple.
+
+    The mirror mode seems even simpler in that we have a new type of block, '2', which represents a mirror
+    shot. The laser upon hitting the mirror object will stop its horizontal trajectory and the laser
+    will shoot out both sides, perpendicular to the mirror block (above and below it) to that of
+    half the power of the ORIGINAL shot. The original shot always has a potential of 4 objects
+    destroyed (let's forget about tnt for now as it isn't that relevant yet); this means that the two
+    perpendicular shots being produced by the mirror block EACH have a potential of 2 objects destroyed, respectively.
+
+    TILL NEXT TIME
+*/
+
 
 // Map functions
 int print_map(int map[SIZE][SIZE], int laser_y, int context);
@@ -51,7 +76,6 @@ int main(int argc, char *argv[])
   printf("How many blocks? ");
   int block_amount;
   scanf("%d", &block_amount);
-  printf("Block amount you entered: %d\n", block_amount);
 
 
   // Scan in the blocks
@@ -223,7 +247,6 @@ void euclidean_distance(int map[SIZE][SIZE], int x1, int y1)
         continue;
       }
       double d = sqrt(pow((x2 - x1), 2.0) + pow((y2 - y1), 2.0));
-      //printf("Euclidean distance of map[%d][%d] from map[%d][%d] is %.2f\n", x2, y2, x1, y1, d);
       if(d < map[x1][y1])
       {
         map[x2][y2] = EMPTY;
