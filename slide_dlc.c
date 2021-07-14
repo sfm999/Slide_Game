@@ -56,10 +56,10 @@ void place_stone(int map[SIZE][SIZE], int row, int column, int value);
 int shift_left(int map[SIZE][SIZE], int laser_y);
 
 // Field rotation functions
-void rotate_90_clockwise(int map[SIZE][SIZE], int night_mode);
-void rotate_90_anticlockwise(int map[SIZE][SIZE], int night_mode);
-void transpose(int map[SIZE][SIZE], int night_mode);
-void reflect(int map[SIZE][SIZE], int night_mode);
+void rotate_90_clockwise(int map[SIZE][SIZE]);
+void rotate_90_anticlockwise(int map[SIZE][SIZE]);
+void transpose(int map[SIZE][SIZE]);
+void reflect(int map[SIZE][SIZE]);
 
 void fire_laser(int map[SIZE][SIZE], int laser_y, int night_mode);
 void euclidean_distance(int map[SIZE][SIZE], int x1, int y1, int night_mode);
@@ -148,10 +148,10 @@ int main(int argc, char *argv[])
       scanf("%d", &cmd2);
       if(cmd2 == 1)
       {
-        rotate_90_clockwise(map, night_mode);
+        rotate_90_clockwise(map);
       }else if(cmd2 == 2)
       {
-        rotate_90_anticlockwise(map, night_mode);
+        rotate_90_anticlockwise(map);
       }
       print_map(map, laser_y, 4, night_mode);
     }
@@ -382,19 +382,19 @@ int shift_left(int map[SIZE][SIZE], int laser_y)
   return PLAY_ON;
 }
 
-void rotate_90_clockwise(int map[SIZE][SIZE], int night_mode)
+void rotate_90_clockwise(int map[SIZE][SIZE])
 {
   transpose(map);
   reflect(map);
 }
 
-void rotate_90_anticlockwise(int map[SIZE][SIZE], int night_mode)
+void rotate_90_anticlockwise(int map[SIZE][SIZE])
 {
   reflect(map);
   transpose(map);
 }
 
-void transpose(int map[SIZE][SIZE], int night_mode)
+void transpose(int map[SIZE][SIZE])
 {
   int i = 0;
   while(i < HALF_SIZE)
@@ -411,10 +411,10 @@ void transpose(int map[SIZE][SIZE], int night_mode)
   }
 }
 
-void reflect(int map[SIZE][SIZE], int night_mode)
+void reflect(int map[SIZE][SIZE])
 {
   int i = 0;
-  int N = sizeof(map[0]) / sizeof(map[0][0]);
+  int N = (sizeof(map[0]) / sizeof(map[0][0])) / 2;
   while(i < N)
   {
     int j = 0;
