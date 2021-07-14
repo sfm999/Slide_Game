@@ -74,6 +74,7 @@ void transpose(int realm[SIZE][SIZE]);
 void reflect(int realm[SIZE][SIZE]);
 
 void fire_laser(int realm[SIZE][SIZE], int laser_y);
+void mirror_shot(int realm[SIZE][SIZE], int y, int x);
 void euclidean_distance(int realm[SIZE][SIZE], int x1, int y1);
 
 
@@ -165,11 +166,6 @@ int main(int argc, char *argv[])
 
     }else if(cmd1 == SHIFT)
     {
-      if(night_mode == DAY){
-        night_mode = NIGHT;
-      }else if(night_mode == NIGHT){
-        night_mode = DAY;
-      }
       int game_one = shift_left(day_realm, laser_y);
       int game_two = shift_left(night_realm, laser_y);
       if(game_one == LOSE || game_two == LOSE)
@@ -178,14 +174,13 @@ int main(int argc, char *argv[])
         print_realm(day_realm, laser_y, SHIFT);
         printf("Game Lost!\n");
         break;
-      }else{
-        if(night_mode == DAY){
-          print_realm(day_realm, laser_y, SHIFT);
-          night_mode = NIGHT;
-        }else if(night_mode == NIGHT){
-          print_realm(night_realm, laser_y, SHIFT);
-          night_mode = DAY;
-        }
+      }
+      if(night_mode == DAY){
+        night_mode = NIGHT;
+        print_realm(night_realm, laser_y, SHIFT);
+      }else if(night_mode == NIGHT){
+        night_mode = DAY;
+        print_realm(day_realm, laser_y, SHIFT);
       }
     }else if(cmd1 == ROTATE)
     {
@@ -294,6 +289,37 @@ void fire_laser(int realm[SIZE][SIZE], int laser_y)
       continue;
     }
 
+    if(realm[laser_y][j] == 2){
+      realm[laser_y][j] = EMPTY;
+      int y = laser_y;
+      int mirror_count = 0;
+      while(y >= 0)
+      {
+        if(count >= 2){
+          break;
+        }
+        if(realm[y][j] == 1){
+          realm[y][j] = EMPTY;
+          ++mirror_count;
+        }
+        --y;
+      }
+      y = laser_y;
+      mirror_count = 0;
+      while(y < SIZE)
+      {
+        if(count >= 2){
+          break;
+        }
+        if(realm[y][j] == 1){
+          realm[y][j] = EMPTY;
+          ++mirror_count;
+        }
+        ++y;
+      }
+      return;
+    }
+
     if(realm[laser_y][j] >= 4 && realm[laser_y][j] <= 9){
       euclidean_distance(realm, laser_y, j);
       realm[laser_y][j] = EMPTY;
@@ -305,21 +331,23 @@ void fire_laser(int realm[SIZE][SIZE], int laser_y)
   return;
 }
 
+void mirror_shot(int realm[SIZE][SIZE], int y, int x)
+{
+
+}
+
 void euclidean_distance(int realm[SIZE][SIZE], int x1, int y1)
 {
   int x2 = 0;
   while(x2 < SIZE){
     int y2 = 0;
-    while(y2 < SIZE)
-    {
-      if((x2 == x1) && (y2 == y1))
-      {
+    while(y2 < SIZE){
+      if((x2 == x1) && (y2 == y1)){
         ++y2;
         continue;
       }
       double d = sqrt(pow((x2 - x1), 2.0) + pow((y2 - y1), 2.0));
-      if(d < realm[x1][y1])
-      {
+      if(d < realm[x1][y1]){
         realm[x2][y2] = EMPTY;
       }
       ++y2;
@@ -333,16 +361,16 @@ int shift_left(int realm[SIZE][SIZE], int laser_y)
   int i = 0;
   while(i < SIZE){
     int j = 0;
-    while(j < SIZE)
-    {
-      if(j == 0 && realm[i][j] == 1)
+    while(j < SIZE){
+      if(j == 0 && realm[i][j] == 1){
         return LOSE;
+      }
 
-      if(j == SIZE - 1)
+      if(j == SIZE - 1){
         realm[i][j] = EMPTY;
-      else
+      }else{
         realm[i][j] = realm[i][j+1];
-
+      }
       j++;
     }
     i++;
@@ -367,8 +395,7 @@ void transpose(int realm[SIZE][SIZE])
   int i = 0;
   while(i < SIZE){
     int j = 0;
-    while(j < i)
-    {
+    while(j < i){
       int temp = realm[i][j];
       realm[i][j] = realm[j][i];
       realm[j][i] = temp;
@@ -384,8 +411,7 @@ void reflect(int realm[SIZE][SIZE])
   int N = sizeof(realm[0]) / sizeof(realm[0][0]);
   while(i < N){
     int j = 0;
-    while(j < N/2)
-    {
+    while(j < N/2){
       int temp = realm[i][j];
       realm[i][j] = realm[i][N - j - 1];
       realm[i][N - j - 1] = temp;
